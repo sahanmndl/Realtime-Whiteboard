@@ -6,11 +6,15 @@ import RedoIcon from '@mui/icons-material/Redo';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import "./index.css";
 import Whiteboard from "../../components/Whiteboard";
+import { useRef } from "react";
 
 const RoomPage = () => {
 
+    const canvasRef = useRef(null)
+    const contextRef = useRef(null)
     const [tool, setTool] = useState('pencil')
     const [color, setColor] = useState('black')
+    const [elements, setElements] = useState([])
 
     return (
         <div className="column">
@@ -116,7 +120,12 @@ const RoomPage = () => {
                     justifyContent: 'center'
                 }}
             >
-                <Whiteboard />
+                <Whiteboard 
+                    canvasRef={canvasRef} 
+                    contextRef={contextRef} 
+                    elements={elements}
+                    setElements={setElements}
+                />
             </Box>
         </div>
     )
