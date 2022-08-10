@@ -1,9 +1,10 @@
 import React from "react";
 import { useState } from "react";
-import { Box, FormControl, FormControlLabel, IconButton, Radio, RadioGroup, Typography } from "@mui/material";
+import { Box, FormControl, FormControlLabel, IconButton, Radio, RadioGroup, Tooltip, Typography } from "@mui/material";
+import ColorizeIcon from '@mui/icons-material/Colorize';
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
-import ClearAllIcon from '@mui/icons-material/ClearAll';
+import ClearIcon from '@mui/icons-material/Clear';
 import "./index.css";
 import Whiteboard from "../../components/Whiteboard";
 import { useRef } from "react";
@@ -18,15 +19,18 @@ const RoomPage = () => {
 
     return (
         <div className="column">
-            <h1 className="text-center py-3">White Board Sharing App</h1>
+            <h1 className="text-center py-3">Live Board</h1>
             <Box
                 sx={{
                     display: 'flex', 
                     flex: 1, 
                     flexDirection: 'row', 
                     alignItems: 'center', 
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    borderRadius: 1
                 }}
+                boxShadow={2}
+                padding={1}
             >
                 <FormControl>
                     <RadioGroup
@@ -49,9 +53,9 @@ const RoomPage = () => {
                             onChange={(e) => setTool(e.target.value)} 
                         />
                         <FormControlLabel 
-                            value="rectangle" 
+                            value="rect" 
                             control={<Radio />} 
-                            checked={tool === 'rectangle'}
+                            checked={tool === 'rect'}
                             label="Rectangle" 
                             onChange={(e) => setTool(e.target.value)} 
                         />
@@ -67,7 +71,9 @@ const RoomPage = () => {
                         justifyContent: 'center'
                     }}
                 >
-                    <label htmlFor="color">Pick Color</label>
+                    <Tooltip title="Pick Color" enterDelay={500}>
+                        <ColorizeIcon color="primary" />
+                    </Tooltip>
                     <input
                         className="ms-2"
                         type="color"
@@ -84,15 +90,21 @@ const RoomPage = () => {
                         justifyContent: 'center'
                     }}
                 >
-                    <IconButton>
-                        <UndoIcon />
-                    </IconButton>
-                    <IconButton>
-                        <RedoIcon />
-                    </IconButton>
-                    <IconButton color="error">
-                        <ClearAllIcon />
-                    </IconButton>
+                    <Tooltip title="Undo" enterDelay={500}>
+                        <IconButton>
+                            <UndoIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Redo" enterDelay={500}>
+                        <IconButton>
+                            <RedoIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Clear All" enterDelay={500}>
+                        <IconButton color="error">
+                            <ClearIcon />
+                        </IconButton>
+                    </Tooltip>
                 </Box>
                 <Box
                     sx={{
@@ -117,12 +129,15 @@ const RoomPage = () => {
                     flex: 1, 
                     height: '500px', 
                     alignItems: 'center', 
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    borderRadius: 2
                 }}
+                boxShadow={2}
             >
                 <Whiteboard 
                     canvasRef={canvasRef} 
                     contextRef={contextRef} 
+                    tool={tool}
                     elements={elements}
                     setElements={setElements}
                 />
