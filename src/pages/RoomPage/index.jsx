@@ -16,6 +16,27 @@ const RoomPage = () => {
     const [tool, setTool] = useState('pencil')
     const [color, setColor] = useState('black')
     const [elements, setElements] = useState([])
+    const [history, setHistory] = useState([])
+
+    const handleUndo = () => {
+        setHistory((prevHistory) => [
+            ...prevHistory,
+            elements[elements.length - 1]
+        ])
+        setElements((prevElements) => 
+            prevElements.slice(0, prevElements.length - 1)  
+        )
+    }
+
+    const handleRedo = () => {
+        setElements((prevElements) => [
+            ...prevElements,
+            history[history.length - 1]
+        ])
+        setHistory((prevHistory) =>
+            prevHistory.slice(0, prevHistory.length - 1)
+        )
+    }
 
     const handleClearCanvas = () => {
         const canvas = canvasRef.current
@@ -99,12 +120,12 @@ const RoomPage = () => {
                     }}
                 >
                     <Tooltip title="Undo" enterDelay={500}>
-                        <IconButton>
+                        <IconButton disabled={elements.length === 0} color="primary" onClick={() => handleUndo()}>
                             <UndoIcon />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Redo" enterDelay={500}>
-                        <IconButton>
+                        <IconButton disabled={history.length < 1} color="primary" onClick={() => handleRedo()}>
                             <RedoIcon />
                         </IconButton>
                     </Tooltip>
