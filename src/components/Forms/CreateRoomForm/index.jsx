@@ -1,7 +1,29 @@
 import React from "react"
 import { Container, Box, TextField, Button } from "@mui/material"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
-const CreateRoomForm = () => {
+const CreateRoomForm = ({uuid, socket, setUser}) => {
+
+    const navigate = useNavigate()
+    const [roomId, setRoomId] = useState(uuid())
+    const [name, setName] = useState("")
+
+    const createNewRoom = (e) => {
+        e.preventDefault()
+        const roomData = {
+            name, 
+            roomId,
+            userId: uuid(),
+            host: true,
+            presenter: true
+        }
+        setUser(roomData)
+        navigate(`/${roomId}`)
+        console.log(roomData)
+        socket.emit("userJoined", roomData)
+    }
+
     return (
         <Container component="main" maxWidth="xs">
             <Box
@@ -20,6 +42,8 @@ const CreateRoomForm = () => {
                         id="name"
                         label="Enter Your Name"
                         name="name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                     />
                     <TextField
                         margin="normal"
@@ -28,6 +52,7 @@ const CreateRoomForm = () => {
                         id="room-code"
                         label="Generate Room Code"
                         name="room-code"
+                        value={roomId}
                     />
                     <Box
                         sx={{
@@ -38,16 +63,15 @@ const CreateRoomForm = () => {
                         }}
                     >
                         <Button
-                            type="submit"
                             fullWidth
                             variant="contained"
-                            color='success'
+                            color="success"
                             sx={{ marginRight: 1 }}
+                            onClick={() => setRoomId(uuid())}
                         >
                             Generate
                         </Button>
                         <Button
-                            type="submit"
                             fullWidth
                             variant="outlined"
                             color='error'
@@ -60,6 +84,8 @@ const CreateRoomForm = () => {
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
+                        disabled={name === "" ? true : false}
+                        onClick={createNewRoom}
                     >
                         Create
                     </Button>
