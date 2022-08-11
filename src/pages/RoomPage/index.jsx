@@ -17,6 +17,14 @@ const RoomPage = () => {
     const [color, setColor] = useState('black')
     const [elements, setElements] = useState([])
 
+    const handleClearCanvas = () => {
+        const canvas = canvasRef.current
+        const context = canvas.getContext("2d")
+        context.fillRect = "white"
+        contextRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
+        setElements([])
+    }
+
     return (
         <div className="column">
             <h1 className="text-center py-3">Live Board</h1>
@@ -101,7 +109,7 @@ const RoomPage = () => {
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Clear All" enterDelay={500}>
-                        <IconButton color="error">
+                        <IconButton color="error" onClick={handleClearCanvas}>
                             <ClearIcon />
                         </IconButton>
                     </Tooltip>
@@ -138,6 +146,7 @@ const RoomPage = () => {
                     canvasRef={canvasRef} 
                     contextRef={contextRef} 
                     tool={tool}
+                    color={color}
                     elements={elements}
                     setElements={setElements}
                 />
