@@ -9,7 +9,7 @@ import "./index.css";
 import Whiteboard from "../../components/Whiteboard";
 import { useRef } from "react";
 
-const RoomPage = () => {
+const RoomPage = ({user, socket}) => {
 
     const canvasRef = useRef(null)
     const contextRef = useRef(null)
@@ -49,106 +49,110 @@ const RoomPage = () => {
     return (
         <div className="column">
             <h1 className="text-center py-3">Live Board</h1>
-            <Box
-                sx={{
-                    display: 'flex', 
-                    flex: 1, 
-                    flexDirection: 'row', 
-                    alignItems: 'center', 
-                    justifyContent: 'center',
-                    borderRadius: 1
-                }}
-                boxShadow={2}
-                padding={1}
-            >
-                <FormControl>
-                    <RadioGroup
-                        row
-                        aria-labelledby="demo-row-radio-buttons-group-label"
-                        name="row-radio-buttons-group"
+            {
+                user?.presenter ? (
+                    <Box
+                        sx={{
+                            display: 'flex', 
+                            flex: 1, 
+                            flexDirection: 'row', 
+                            alignItems: 'center', 
+                            justifyContent: 'center',
+                            borderRadius: 1
+                        }}
+                        boxShadow={2}
+                        padding={1}
                     >
-                        <FormControlLabel 
-                            value="pencil" 
-                            control={<Radio />} 
-                            checked={tool === 'pencil'}
-                            label="Pencil" 
-                            onChange={(e) => setTool(e.target.value)} 
-                        />
-                        <FormControlLabel 
-                            value="line" 
-                            control={<Radio />} 
-                            checked={tool === 'line'}
-                            label="Line" 
-                            onChange={(e) => setTool(e.target.value)} 
-                        />
-                        <FormControlLabel 
-                            value="rect" 
-                            control={<Radio />} 
-                            checked={tool === 'rect'}
-                            label="Rectangle" 
-                            onChange={(e) => setTool(e.target.value)} 
-                        />
-                    </RadioGroup>
-                </FormControl>
-                <Box
-                    sx={{
-                        marginLeft: '30px', 
-                        marginRight: '40px', 
-                        display: 'flex', 
-                        flexDirection: 'row', 
-                        alignItems: 'center', 
-                        justifyContent: 'center'
-                    }}
-                >
-                    <Tooltip title="Pick Color" enterDelay={500}>
-                        <ColorizeIcon color="primary" />
-                    </Tooltip>
-                    <input
-                        className="ms-2"
-                        type="color"
-                        id="color"
-                        value={color}
-                        onChange={(e) => setColor(e.target.value)}
-                    />
-                </Box>
-                <Box
-                    sx={{
-                        display: 'flex', 
-                        flexDirection: 'row', 
-                        alignItems: 'center', 
-                        justifyContent: 'center'
-                    }}
-                >
-                    <Tooltip title="Undo" enterDelay={500}>
-                        <IconButton disabled={elements.length === 0} color="primary" onClick={() => handleUndo()}>
-                            <UndoIcon />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Redo" enterDelay={500}>
-                        <IconButton disabled={history.length < 1} color="primary" onClick={() => handleRedo()}>
-                            <RedoIcon />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Clear All" enterDelay={500}>
-                        <IconButton color="error" onClick={handleClearCanvas}>
-                            <ClearIcon />
-                        </IconButton>
-                    </Tooltip>
-                </Box>
-                <Box
-                    sx={{
-                        marginLeft: '30px',
-                        display: 'flex', 
-                        flexDirection: 'row', 
-                        alignItems: 'center', 
-                        justifyContent: 'center'
-                    }}
-                >
-                    <Typography variant="subtitle1">
-                        Users Online: 0
-                    </Typography>
-                </Box>
-            </Box>
+                        <FormControl>
+                            <RadioGroup
+                                row
+                                aria-labelledby="demo-row-radio-buttons-group-label"
+                                name="row-radio-buttons-group"
+                            >
+                                <FormControlLabel 
+                                    value="pencil" 
+                                    control={<Radio />} 
+                                    checked={tool === 'pencil'}
+                                    label="Pencil" 
+                                    onChange={(e) => setTool(e.target.value)} 
+                                />
+                                <FormControlLabel 
+                                    value="line" 
+                                    control={<Radio />} 
+                                    checked={tool === 'line'}
+                                    label="Line" 
+                                    onChange={(e) => setTool(e.target.value)} 
+                                />
+                                <FormControlLabel 
+                                    value="rect" 
+                                    control={<Radio />} 
+                                    checked={tool === 'rect'}
+                                    label="Rectangle" 
+                                    onChange={(e) => setTool(e.target.value)} 
+                                />
+                            </RadioGroup>
+                        </FormControl>
+                        <Box
+                            sx={{
+                                marginLeft: '30px', 
+                                marginRight: '40px', 
+                                display: 'flex', 
+                                flexDirection: 'row', 
+                                alignItems: 'center', 
+                                justifyContent: 'center'
+                            }}
+                        >
+                            <Tooltip title="Pick Color" enterDelay={500}>
+                                <ColorizeIcon color="primary" />
+                            </Tooltip>
+                            <input
+                                className="ms-2"
+                                type="color"
+                                id="color"
+                                value={color}
+                                onChange={(e) => setColor(e.target.value)}
+                            />
+                        </Box>
+                        <Box
+                            sx={{
+                                display: 'flex', 
+                                flexDirection: 'row', 
+                                alignItems: 'center', 
+                                justifyContent: 'center'
+                            }}
+                        >
+                            <Tooltip title="Undo" enterDelay={500}>
+                                <IconButton disabled={elements.length === 0} color="primary" onClick={() => handleUndo()}>
+                                    <UndoIcon />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Redo" enterDelay={500}>
+                                <IconButton disabled={history.length < 1} color="primary" onClick={() => handleRedo()}>
+                                    <RedoIcon />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Clear All" enterDelay={500}>
+                                <IconButton color="error" onClick={handleClearCanvas}>
+                                    <ClearIcon />
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
+                        <Box
+                            sx={{
+                                marginLeft: '30px',
+                                display: 'flex', 
+                                flexDirection: 'row', 
+                                alignItems: 'center', 
+                                justifyContent: 'center'
+                            }}
+                        >
+                            <Typography variant="subtitle1">
+                                Users Online: 0
+                            </Typography>
+                        </Box>
+                    </Box>
+                ) : null
+            }
             <Box
                 sx={{
                     marginTop: '20px', 
@@ -170,6 +174,8 @@ const RoomPage = () => {
                     color={color}
                     elements={elements}
                     setElements={setElements}
+                    user={user}
+                    socket={socket}
                 />
             </Box>
         </div>

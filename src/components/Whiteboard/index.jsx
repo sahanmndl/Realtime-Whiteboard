@@ -3,10 +3,27 @@ import { useLayoutEffect } from "react";
 import { useState } from "react";
 import rough from "roughjs";
 
-const Whiteboard = ({canvasRef, contextRef, tool, color, elements, setElements}) => {
+const Whiteboard = ({canvasRef, contextRef, tool, color, elements, setElements, user, socket}) => {
 
     const roughGenerator = rough.generator()
     const [isDrawing, setIsDrawing] = useState(false)
+    const [image, setImage] = useState(null)
+
+    useEffect(() => {
+        socket.on("whiteboardDataResponse", (data) => {
+            setImage(data.imgURL)
+        })
+    }, [])
+
+    if(!user?.presenter) {
+        return (
+            <div
+                className="h-100 w-100 overflow-hidden"
+            >
+                <img src={image} alt="Real Time" className="w-100 h-100" />
+            </div>
+        )
+    }
 
     useEffect(() => {
         const canvas = canvasRef.current
@@ -25,50 +42,56 @@ const Whiteboard = ({canvasRef, contextRef, tool, color, elements, setElements})
     }, [color])
 
     useLayoutEffect(() => {
-        const roughCanvas = rough.canvas(canvasRef.current)
-        if(elements.length > 0) {
-            contextRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
-        }
-        elements.forEach((element) => {
-            if(element.type === "pencil") {
-                roughCanvas.linearPath(
-                    element.path,
-                    {
-                        stroke: element.stroke,
-                        strokeWidth: 3,
-                        roughness: 0
-                    }
-                )
-            } else if (element.type === "line") {
-                roughCanvas.draw(
-                    roughGenerator.line(
-                        element.offsetX, 
-                        element.offsetY, 
-                        element.width, 
-                        element.height,
-                        {
-                            stroke: element.stroke,
-                            strokeWidth: 3,
-                            roughness: 0
-                        }
-                    )
-                )
-            } else if (element.type === "rect") {
-                roughCanvas.draw(
-                    roughGenerator.rectangle(
-                        element.offsetX, 
-                        element.offsetY, 
-                        element.width, 
-                        element.height,
-                        {
-                            stroke: element.stroke,
-                            strokeWidth: 3,
-                            roughness: 0
-                        }
-                    )
-                )
+        if(canvasRef) {
+            const roughCanvas = rough.canvas(canvasRef.current)
+            if(elements.length > 0) {
+                contextRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
             }
-        })
+            elements.forEach((element) => {
+                if(element.type === "pencil") {
+                    roughCanvas.linearPath(
+                        element.path,
+                        {
+                            stroke: element.stroke,
+                            strokeWidth: 3,
+                            roughness: 0
+                        }
+                    )
+                } else if (element.type === "line") {
+                    roughCanvas.draw(
+                        roughGenerator.line(
+                            element.offsetX, 
+                            element.offsetY, 
+                            element.width, 
+                            element.height,
+                            {
+                                stroke: element.stroke,
+                                strokeWidth: 3,
+                                roughness: 0
+                            }
+                        )
+                    )
+                } else if (element.type === "rect") {
+                    roughCanvas.draw(
+                        roughGenerator.rectangle(
+                            element.offsetX, 
+                            element.offsetY, 
+                            element.width, 
+                            element.height,
+                            {
+                                stroke: element.stroke,
+                                strokeWidth: 3,
+                                roughness: 0
+                            }
+                        )
+                    )
+                }
+            })
+
+            const canvasImage = canvasRef.current.toDataURL()
+            socket.emit("whiteboardData", canvasImage)
+        }
+        
     }, [elements])
 
     const handleMouseDown = (e) => {
@@ -166,6 +189,8 @@ const Whiteboard = ({canvasRef, contextRef, tool, color, elements, setElements})
     const handleMouseUp = (e) => {
         setIsDrawing(false)
     }
+
+    
 
     return (
         <div
