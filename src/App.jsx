@@ -4,7 +4,7 @@ import RoomPage from "./pages/RoomPage"
 import { io } from "socket.io-client"
 import { useEffect, useState } from "react"
 
-const server = "http://localhost:5000"
+const server = "https://realtime-whiteboard-1.herokuapp.com/"
 const connectionOptions = {
   "force new connection": true,
   reconnectionAttempts: "Infinity",
@@ -17,6 +17,7 @@ const socket = io(server, connectionOptions)
 const App = () => {
 
   const [user, setUser] = useState(null)
+  const [users, setUsers] = useState([])
 
   useEffect(() => {
     socket.on("userHasJoined", (data) => {
@@ -25,6 +26,10 @@ const App = () => {
       } else {
         console.log("error")
       }
+    })
+
+    socket.on("usersCount", (data) => {
+      setUsers(data.users)
     })
   }, [])
 
@@ -52,7 +57,7 @@ const App = () => {
     <div className="container">
       <Routes>
         <Route path="/" element={<Form uuid={uuid} socket={socket} setUser={setUser} />} />
-        <Route path="/:roomId" element={<RoomPage user={user} socket={socket} />} />
+        <Route path="/:roomId" element={<RoomPage user={user} users={users} socket={socket} />} />
       </Routes>
     </div>
   )

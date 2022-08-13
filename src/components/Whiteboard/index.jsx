@@ -17,10 +17,12 @@ const Whiteboard = ({canvasRef, contextRef, tool, color, elements, setElements, 
 
     if(!user?.presenter) {
         return (
-            <div
-                className="h-100 w-100 overflow-hidden"
-            >
-                <img src={image} alt="Real Time" className="w-100 h-100" />
+            <div className="h-100 w-100 overflow-hidden">
+                <img 
+                    src={image} 
+                    alt="Real Time" 
+                    style={{height: window.innerHeight * 2, width: '285%'}}
+                />
             </div>
         )
     }

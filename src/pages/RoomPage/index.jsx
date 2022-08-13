@@ -5,11 +5,10 @@ import ColorizeIcon from '@mui/icons-material/Colorize';
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
 import ClearIcon from '@mui/icons-material/Clear';
-import "./index.css";
 import Whiteboard from "../../components/Whiteboard";
 import { useRef } from "react";
 
-const RoomPage = ({user, socket}) => {
+const RoomPage = ({user, users, socket}) => {
 
     const canvasRef = useRef(null)
     const contextRef = useRef(null)
@@ -17,6 +16,8 @@ const RoomPage = ({user, socket}) => {
     const [color, setColor] = useState('black')
     const [elements, setElements] = useState([])
     const [history, setHistory] = useState([])
+
+    console.log(users)
 
     const handleUndo = () => {
         setHistory((prevHistory) => [
@@ -137,7 +138,7 @@ const RoomPage = ({user, socket}) => {
                                 </IconButton>
                             </Tooltip>
                         </Box>
-                        <Box
+                        {/**<Box
                             sx={{
                                 marginLeft: '30px',
                                 display: 'flex', 
@@ -147,9 +148,9 @@ const RoomPage = ({user, socket}) => {
                             }}
                         >
                             <Typography variant="subtitle1">
-                                Users Online: 0
+                                Users Online: {users.length}
                             </Typography>
-                        </Box>
+                        </Box>**/}
                     </Box>
                 ) : null
             }
