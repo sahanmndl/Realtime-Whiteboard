@@ -2,6 +2,6 @@
 Realtime whiteboard using Socket IO
 
 # Run locally
-~ npm build
+~ npm install
 
 ~ vite
