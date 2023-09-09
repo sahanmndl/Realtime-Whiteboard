@@ -1,6 +1,4 @@
-import React, { useEffect } from "react";
-import { useLayoutEffect } from "react";
-import { useState } from "react";
+import React, {useEffect, useLayoutEffect, useState} from "react";
 import rough from "roughjs";
 
 const Whiteboard = ({canvasRef, contextRef, tool, color, elements, setElements, user, socket}) => {
@@ -15,12 +13,12 @@ const Whiteboard = ({canvasRef, contextRef, tool, color, elements, setElements, 
         })
     }, [])
 
-    if(!user?.presenter) {
+    if (!user?.presenter) {
         return (
             <div className="h-100 w-100 overflow-hidden">
-                <img 
-                    src={image} 
-                    alt="Real Time" 
+                <img
+                    src={image}
+                    alt="Real Time"
                     style={{height: window.innerHeight * 2, width: '285%'}}
                 />
             </div>
@@ -44,13 +42,13 @@ const Whiteboard = ({canvasRef, contextRef, tool, color, elements, setElements, 
     }, [color])
 
     useLayoutEffect(() => {
-        if(canvasRef) {
+        if (canvasRef) {
             const roughCanvas = rough.canvas(canvasRef.current)
-            if(elements.length > 0) {
+            if (elements.length > 0) {
                 contextRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
             }
             elements.forEach((element) => {
-                if(element.type === "pencil") {
+                if (element.type === "pencil") {
                     roughCanvas.linearPath(
                         element.path,
                         {
@@ -62,9 +60,9 @@ const Whiteboard = ({canvasRef, contextRef, tool, color, elements, setElements, 
                 } else if (element.type === "line") {
                     roughCanvas.draw(
                         roughGenerator.line(
-                            element.offsetX, 
-                            element.offsetY, 
-                            element.width, 
+                            element.offsetX,
+                            element.offsetY,
+                            element.width,
                             element.height,
                             {
                                 stroke: element.stroke,
@@ -76,9 +74,9 @@ const Whiteboard = ({canvasRef, contextRef, tool, color, elements, setElements, 
                 } else if (element.type === "rect") {
                     roughCanvas.draw(
                         roughGenerator.rectangle(
-                            element.offsetX, 
-                            element.offsetY, 
-                            element.width, 
+                            element.offsetX,
+                            element.offsetY,
+                            element.width,
                             element.height,
                             {
                                 stroke: element.stroke,
@@ -93,16 +91,16 @@ const Whiteboard = ({canvasRef, contextRef, tool, color, elements, setElements, 
             const canvasImage = canvasRef.current.toDataURL()
             socket.emit("whiteboardData", canvasImage)
         }
-        
+
     }, [elements])
 
     const handleMouseDown = (e) => {
         const {offsetX, offsetY} = e.nativeEvent
         setIsDrawing(true)
 
-        if(tool === "pencil") {
+        if (tool === "pencil") {
             setElements((prevElements) => [
-                ...prevElements, 
+                ...prevElements,
                 {
                     type: "pencil",
                     offsetX,
@@ -113,7 +111,7 @@ const Whiteboard = ({canvasRef, contextRef, tool, color, elements, setElements, 
             ])
         } else if (tool === "line") {
             setElements((prevElements) => [
-                ...prevElements, 
+                ...prevElements,
                 {
                     type: "line",
                     offsetX,
@@ -125,7 +123,7 @@ const Whiteboard = ({canvasRef, contextRef, tool, color, elements, setElements, 
             ])
         } else if (tool === "rect") {
             setElements((prevElements) => [
-                ...prevElements, 
+                ...prevElements,
                 {
                     type: "rect",
                     offsetX,
@@ -140,13 +138,13 @@ const Whiteboard = ({canvasRef, contextRef, tool, color, elements, setElements, 
 
     const handleMouseMove = (e) => {
         const {offsetX, offsetY} = e.nativeEvent
-        if(isDrawing) {
-            if(tool === "pencil") {
+        if (isDrawing) {
+            if (tool === "pencil") {
                 const {path} = elements[elements.length - 1]
                 const newPath = [...path, [offsetX, offsetY]]
-                setElements((prevElements) => 
+                setElements((prevElements) =>
                     prevElements.map((ele, index) => {
-                        if(index === elements.length - 1) {
+                        if (index === elements.length - 1) {
                             return {
                                 ...ele,
                                 path: newPath
@@ -157,9 +155,9 @@ const Whiteboard = ({canvasRef, contextRef, tool, color, elements, setElements, 
                     })
                 )
             } else if (tool === "line") {
-                setElements((prevElements) => 
+                setElements((prevElements) =>
                     prevElements.map((ele, index) => {
-                        if(index === elements.length - 1) {
+                        if (index === elements.length - 1) {
                             return {
                                 ...ele,
                                 width: offsetX,
@@ -171,9 +169,9 @@ const Whiteboard = ({canvasRef, contextRef, tool, color, elements, setElements, 
                     })
                 )
             } else if (tool === "rect") {
-                setElements((prevElements) => 
+                setElements((prevElements) =>
                     prevElements.map((ele, index) => {
-                        if(index === elements.length - 1) {
+                        if (index === elements.length - 1) {
                             return {
                                 ...ele,
                                 width: offsetX - ele.offsetX,
@@ -192,7 +190,6 @@ const Whiteboard = ({canvasRef, contextRef, tool, color, elements, setElements, 
         setIsDrawing(false)
     }
 
-    
 
     return (
         <div
@@ -201,7 +198,7 @@ const Whiteboard = ({canvasRef, contextRef, tool, color, elements, setElements, 
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
         >
-            <canvas ref={canvasRef} />
+            <canvas ref={canvasRef}/>
         </div>
     )
 }

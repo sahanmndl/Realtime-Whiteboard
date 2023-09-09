@@ -1,12 +1,10 @@
-import React from "react";
-import { useState } from "react";
-import { Box, FormControl, FormControlLabel, IconButton, Radio, RadioGroup, Tooltip, Typography } from "@mui/material";
+import React, {useRef, useState} from "react";
+import {Box, FormControl, FormControlLabel, IconButton, Radio, RadioGroup, Tooltip} from "@mui/material";
 import ColorizeIcon from '@mui/icons-material/Colorize';
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
 import ClearIcon from '@mui/icons-material/Clear';
 import Whiteboard from "../../components/Whiteboard";
-import { useRef } from "react";
 
 const RoomPage = ({user, users, socket}) => {
 
@@ -17,15 +15,13 @@ const RoomPage = ({user, users, socket}) => {
     const [elements, setElements] = useState([])
     const [history, setHistory] = useState([])
 
-    console.log(users)
-
     const handleUndo = () => {
         setHistory((prevHistory) => [
             ...prevHistory,
             elements[elements.length - 1]
         ])
-        setElements((prevElements) => 
-            prevElements.slice(0, prevElements.length - 1)  
+        setElements((prevElements) =>
+            prevElements.slice(0, prevElements.length - 1)
         )
     }
 
@@ -49,15 +45,15 @@ const RoomPage = ({user, users, socket}) => {
 
     return (
         <div className="column">
-            <h1 className="text-center py-3">Live Board</h1>
+            <h1 className="text-center py-3">Live Whiteboard</h1>
             {
                 user?.presenter ? (
                     <Box
                         sx={{
-                            display: 'flex', 
-                            flex: 1, 
-                            flexDirection: 'row', 
-                            alignItems: 'center', 
+                            display: 'flex',
+                            flex: 1,
+                            flexDirection: 'row',
+                            alignItems: 'center',
                             justifyContent: 'center',
                             borderRadius: 1
                         }}
@@ -70,41 +66,41 @@ const RoomPage = ({user, users, socket}) => {
                                 aria-labelledby="demo-row-radio-buttons-group-label"
                                 name="row-radio-buttons-group"
                             >
-                                <FormControlLabel 
-                                    value="pencil" 
-                                    control={<Radio />} 
+                                <FormControlLabel
+                                    value="pencil"
+                                    control={<Radio/>}
                                     checked={tool === 'pencil'}
-                                    label="Pencil" 
-                                    onChange={(e) => setTool(e.target.value)} 
+                                    label="Pencil"
+                                    onChange={(e) => setTool(e.target.value)}
                                 />
-                                <FormControlLabel 
-                                    value="line" 
-                                    control={<Radio />} 
+                                <FormControlLabel
+                                    value="line"
+                                    control={<Radio/>}
                                     checked={tool === 'line'}
-                                    label="Line" 
-                                    onChange={(e) => setTool(e.target.value)} 
+                                    label="Line"
+                                    onChange={(e) => setTool(e.target.value)}
                                 />
-                                <FormControlLabel 
-                                    value="rect" 
-                                    control={<Radio />} 
+                                <FormControlLabel
+                                    value="rect"
+                                    control={<Radio/>}
                                     checked={tool === 'rect'}
-                                    label="Rectangle" 
-                                    onChange={(e) => setTool(e.target.value)} 
+                                    label="Rectangle"
+                                    onChange={(e) => setTool(e.target.value)}
                                 />
                             </RadioGroup>
                         </FormControl>
                         <Box
                             sx={{
-                                marginLeft: '30px', 
-                                marginRight: '40px', 
-                                display: 'flex', 
-                                flexDirection: 'row', 
-                                alignItems: 'center', 
+                                marginLeft: '30px',
+                                marginRight: '40px',
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
                                 justifyContent: 'center'
                             }}
                         >
                             <Tooltip title="Pick Color" enterDelay={500}>
-                                <ColorizeIcon color="primary" />
+                                <ColorizeIcon color="primary"/>
                             </Tooltip>
                             <input
                                 className="ms-2"
@@ -116,61 +112,49 @@ const RoomPage = ({user, users, socket}) => {
                         </Box>
                         <Box
                             sx={{
-                                display: 'flex', 
-                                flexDirection: 'row', 
-                                alignItems: 'center', 
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
                                 justifyContent: 'center'
                             }}
                         >
                             <Tooltip title="Undo" enterDelay={500}>
-                                <IconButton disabled={elements.length === 0} color="primary" onClick={() => handleUndo()}>
-                                    <UndoIcon />
+                                <IconButton disabled={elements.length === 0} color="primary"
+                                            onClick={() => handleUndo()}>
+                                    <UndoIcon/>
                                 </IconButton>
                             </Tooltip>
                             <Tooltip title="Redo" enterDelay={500}>
                                 <IconButton disabled={history.length < 1} color="primary" onClick={() => handleRedo()}>
-                                    <RedoIcon />
+                                    <RedoIcon/>
                                 </IconButton>
                             </Tooltip>
                             <Tooltip title="Clear All" enterDelay={500}>
                                 <IconButton color="error" onClick={handleClearCanvas}>
-                                    <ClearIcon />
+                                    <ClearIcon/>
                                 </IconButton>
                             </Tooltip>
                         </Box>
-                        {/**<Box
-                            sx={{
-                                marginLeft: '30px',
-                                display: 'flex', 
-                                flexDirection: 'row', 
-                                alignItems: 'center', 
-                                justifyContent: 'center'
-                            }}
-                        >
-                            <Typography variant="subtitle1">
-                                Users Online: {users.length}
-                            </Typography>
-                        </Box>**/}
                     </Box>
                 ) : null
             }
             <Box
                 sx={{
-                    marginTop: '20px', 
-                    marginLeft: 'auto', 
-                    marginRight: 'auto', 
-                    display: 'flex', 
-                    flex: 1, 
-                    height: '500px', 
-                    alignItems: 'center', 
+                    marginTop: '20px',
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                    display: 'flex',
+                    flex: 1,
+                    height: '500px',
+                    alignItems: 'center',
                     justifyContent: 'center',
                     borderRadius: 2
                 }}
                 boxShadow={2}
             >
-                <Whiteboard 
-                    canvasRef={canvasRef} 
-                    contextRef={contextRef} 
+                <Whiteboard
+                    canvasRef={canvasRef}
+                    contextRef={contextRef}
                     tool={tool}
                     color={color}
                     elements={elements}

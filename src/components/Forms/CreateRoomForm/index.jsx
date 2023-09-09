@@ -1,7 +1,6 @@
-import React from "react"
-import { Container, Box, TextField, Button } from "@mui/material"
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import React, {useState} from "react"
+import {Box, Button, Container, TextField} from "@mui/material"
+import {useNavigate} from "react-router-dom"
 
 const CreateRoomForm = ({uuid, socket, setUser}) => {
 
@@ -12,7 +11,7 @@ const CreateRoomForm = ({uuid, socket, setUser}) => {
     const createNewRoom = (e) => {
         e.preventDefault()
         const roomData = {
-            name, 
+            name,
             roomId,
             userId: uuid(),
             host: true,
@@ -24,6 +23,18 @@ const CreateRoomForm = ({uuid, socket, setUser}) => {
         socket.emit("userJoined", roomData)
     }
 
+    const copyToClipboard = () => {
+        if (roomId) {
+            navigator.clipboard.writeText(roomId)
+                .then(() => {
+                    alert('Code copied to clipboard!');
+                })
+                .catch((error) => {
+                    console.error('Error copying to clipboard: ', error);
+                });
+        }
+    };
+
     return (
         <Container component="main" maxWidth="xs">
             <Box
@@ -34,7 +45,7 @@ const CreateRoomForm = ({uuid, socket, setUser}) => {
                     alignItems: 'center',
                 }}
             >
-                <Box component="form" sx={{ mt: 1 }}>
+                <Box component="form" sx={{mt: 1}}>
                     <TextField
                         margin="normal"
                         required
@@ -66,7 +77,7 @@ const CreateRoomForm = ({uuid, socket, setUser}) => {
                             fullWidth
                             variant="contained"
                             color="success"
-                            sx={{ marginRight: 1 }}
+                            sx={{marginRight: 1}}
                             onClick={() => setRoomId(uuid())}
                         >
                             Generate
@@ -75,6 +86,7 @@ const CreateRoomForm = ({uuid, socket, setUser}) => {
                             fullWidth
                             variant="outlined"
                             color='error'
+                            onClick={() => copyToClipboard()}
                         >
                             Copy
                         </Button>
@@ -83,8 +95,8 @@ const CreateRoomForm = ({uuid, socket, setUser}) => {
                         type="submit"
                         fullWidth
                         variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
-                        disabled={name === "" ? true : false}
+                        sx={{mt: 3, mb: 2}}
+                        disabled={name === ""}
                         onClick={createNewRoom}
                     >
                         Create

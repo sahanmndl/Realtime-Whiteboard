@@ -1,7 +1,6 @@
-import React from "react"
-import { Container, Box, TextField, Button } from "@mui/material"
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import React, {useState} from "react"
+import {Box, Button, Container, TextField} from "@mui/material"
+import {useNavigate} from "react-router-dom"
 
 const JoinRoomForm = ({uuid, socket, setUser}) => {
 
@@ -12,7 +11,7 @@ const JoinRoomForm = ({uuid, socket, setUser}) => {
     const joinRoom = (e) => {
         e.preventDefault()
         const roomData = {
-            name, 
+            name,
             roomId,
             userId: uuid(),
             host: false,
@@ -34,7 +33,7 @@ const JoinRoomForm = ({uuid, socket, setUser}) => {
                     alignItems: 'center',
                 }}
             >
-                <Box component="form" sx={{ mt: 1 }}>
+                <Box component="form" sx={{mt: 1}}>
                     <TextField
                         margin="normal"
                         required
@@ -59,7 +58,8 @@ const JoinRoomForm = ({uuid, socket, setUser}) => {
                         type="submit"
                         fullWidth
                         variant="contained"
-                        sx={{ mt: 9.5, mb: 2 }}
+                        sx={{mt: 9.5, mb: 2}}
+                        disabled={name === "" || roomId === ""}
                         onClick={joinRoom}
                     >
                         Join
